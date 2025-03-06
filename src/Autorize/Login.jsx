@@ -1,19 +1,24 @@
 import React, { useState } from "react";
 import { Button, TextField } from "@mui/material";
 import { Alert } from "@mui/material";
+import { login } from "../services/authService";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = ({ onLogin }) => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email === "user@example.com" && password === "password") {
-      localStorage.setItem("isAuthenticated", "true");
+    try {
+      await login(username, password);
       onLogin();
-    } else {
-      setError(true);
+      navigate("/");
+    } catch (err) {
+      setError("Invalid username or password");
     }
   };
 
@@ -37,10 +42,13 @@ const Login = ({ onLogin }) => {
           }}
         >
           <h2>Sign In</h2>
+          <Link to={"/register"}>
+            <h2>Registration</h2>
+          </Link>
           <TextField
             required={true}
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
             type="text"
             id="standard-basic"
             label="Standard"
@@ -59,7 +67,7 @@ const Login = ({ onLogin }) => {
           />
           {error && (
             <Alert variant="outlined" severity="error">
-              Invalid username or password
+              {error}
             </Alert>
           )}
           <Button type="submit" variant="contained">

@@ -8,29 +8,31 @@ import { useEffect, useState, useRef } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link } from "react-router-dom";
 import Profile from "./profile";
 import { Navigate } from "react-router-dom";
+import { logout, isAuthenticated as checkAuth } from "./services/authService";
+import Register from "./Autorize/Register";
+import ChatIcon from "@mui/icons-material/Chat";
+import Chat from "./Chat/Chat";
 
 function App() {
   const [counts, setCounts] = useState(0);
   const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || "");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(checkAuth());
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("theme") === "dark" ? false : true
   );
   const [name, setName] = useState(localStorage.getItem("nick" || ""));
 
-  const totalActiveTasksRef = useRef(0);
-
   useEffect(() => {
-    const authStatus = localStorage.getItem("isAuthenticated");
-    if (authStatus === "true") {
-      setIsAuthenticated(true);
-    }
+    setIsAuthenticated(checkAuth());
   }, []);
 
+  const handleLogout = () => {
+    logout();
+    setIsAuthenticated(false);
+  };
   const theme = createTheme({
     palette: {
       mode: darkMode ? "light" : "dark",
@@ -58,7 +60,7 @@ function App() {
     setName(name);
     localStorage.setItem("nick", name);
   };
-  console.log(counts);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -89,6 +91,17 @@ function App() {
                   {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
                 </IconButton>
                 <Link
+                  to="/Chats"
+                  style={{
+                    textDecoration: "none",
+                    color: "inherit",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <ChatIcon></ChatIcon>
+                </Link>
+                <Link
                   to="/profile"
                   style={{
                     textDecoration: "none",
@@ -112,7 +125,7 @@ function App() {
                     />
                   </div>
                 </Link>
-                <Logout onLogout={() => setIsAuthenticated(false)} />
+                <button onClick={handleLogout}>Выйти</button>
               </div>
             </div>
           </Container>
@@ -130,6 +143,7 @@ function App() {
                 />
               }
             />
+            <Route path="/Chats" element={<Chat />} />
           </Routes>
         </>
       ) : (
@@ -139,6 +153,7 @@ function App() {
             element={<Login onLogin={() => setIsAuthenticated(true)} />}
           />
           <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       )}
     </ThemeProvider>

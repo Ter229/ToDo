@@ -1,13 +1,12 @@
 import { Container, Paper } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, Button } from "@mui/material";
 import { useRef } from "react";
 import CreateIcon from "@mui/icons-material/Create";
+import { updateAvatar, getUserAvatar } from "./services/authService";
 
 const Profile = ({ changeAvatar, changeNames }) => {
-  const [selectedImg, setSelectedImg] = useState(
-    localStorage.getItem("avatar") || ""
-  );
+  const [selectedImg, setSelectedImg] = useState("");
   const [changeName, setChangeName] = useState(
     localStorage.getItem("nick") || ""
   );
@@ -15,6 +14,25 @@ const Profile = ({ changeAvatar, changeNames }) => {
 
   const fileReader = new FileReader();
   const refInput = useRef();
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
+
+  useEffect(() => {
+    const storedAvatar = localStorage.getItem("avatar");
+    if (storedAvatar) {
+      setSelectedImg(storedAvatar);
+    } else {
+      // Если аватарка в localStorage отсутствует, то делаем запрос на сервер
+      const fetchProfile = async () => {
+        const data = await getUserAvatar(token);
+        if (data && data.avatar) {
+          localStorage.setItem("avatar", data.avatar);
+          setSelectedImg(data.avatar);
+        }
+      };
+      fetchProfile();
+    }
+  }, [token]);
 
   fileReader.onloadend = () => {
     setSelectedImg(fileReader.result);
@@ -25,10 +43,39 @@ const Profile = ({ changeAvatar, changeNames }) => {
     fileReader.readAsDataURL(file);
   };
 
-  const saveAvatar = () => {
-    changeAvatar(selectedImg);
-    localStorage.setItem("avatar", selectedImg);
+  // const saveAvatar = async () => {
+  //   try {
+  //     const response = await updateAvatar(selectedImg, token);
+  //     console.log("gellll", response);
+  //     if (response.data) {
+  //       changeAvatar(response.data.avatar);
+  //       localStorage.setItem("avatar", response.data.avatar);
+  //     }
+  //   } catch (error) {
+  //     console.log("Error updating:", error);
+  //   }
+  // };
+
+  const saveAvatar = async () => {
+    try {
+      const data = await updateAvatar(selectedImg, token);
+      console.log("Response from server:", data); // Посмотреть, что реально приходит
+
+      if (data && data.avatar) {
+        changeAvatar(data.avatar);
+        localStorage.setItem("avatar", data.avatar);
+        console.log(
+          "Avatar saved to localStorage:",
+          localStorage.getItem("avatar")
+        );
+      } else {
+        console.log("Server response does not contain avatar field");
+      }
+    } catch (error) {
+      console.log("Error updating avatar:", error);
+    }
   };
+
   const handlePick = () => {
     refInput.current.click();
   };
