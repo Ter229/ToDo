@@ -86,6 +86,9 @@ const Chat = () => {
           height: "90vh", // Уменьшаем высоту блока с чатом
         }}
       >
+        <div style={{ border: "3px solid purple", padding: "5px" }}>
+          Name channel
+        </div>
         {/* Блок с сообщениями */}
         <div
           style={{

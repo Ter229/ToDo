@@ -65,7 +65,7 @@ const TodoItem = ({ todo, deleteTodo, editTask, tasksProgress }) => {
         flexDirection: "column",
         justifyContent: "space-between",
         padding: 2,
-        minHeight: "150px", // Фиксируем высоту для одинаковых блоков
+        minHeight: "150px",
         minWidth: "200px",
         maxWidth: "350px",
       }}

@@ -1,8 +1,52 @@
-# React + Vite
+# 📝ToDo App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Полноценное ToDo-приложение с авторизацией, сменой аватара и управлением задачами. Реализовано с использованием **React**, **Express.js**, **JWT**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Стек технологий
+
+### 🧠 Frontend:
+
+- React
+- React Router
+- Axios
+- Vite
+
+### 🖥️ Backend:
+
+- Node.js
+- Express.js
+- bcryptjs
+- JSON Web Tokens (JWT)
+
+---
+
+## ✨ Основные фичи
+
+- 🔐 Регистрация и вход с использованием JWT
+- 👤 Профиль пользователя с возможностью смены аватара
+- ✅ CRUD операции с задачами (создание, редактирование, удаление, отметка "выполнено")
+- 🔄 Асинхронная работа с сервером через Axios
+
+---
+
+### ⚙️ Переменные окружения
+
+Создайте файл `.env` и добавьте туда:
+
+```env
+PORT=5000
+JWT_SECRET=mysecretkey
+```
+
+---
+
+### 🔧 Клонировать репозиторий:
+
+```bash
+git clone https://github.com/Ter229/ToDo.git
+cd ToDo
+
+
+```
